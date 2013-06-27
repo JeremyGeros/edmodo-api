@@ -19,7 +19,7 @@ module Edmodo
             raise EdmodoApiError.new "EdmodoAPI Error: Request Method error."
           end
 
-        check_response_for_errors(raw_response) && JSON.parse(raw_response.body)
+        JSON.parse(raw_response.body)
       end
 
       # Helper method to make sure the request returned with 200 status and raised an exception otherwise
