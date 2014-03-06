@@ -14,7 +14,7 @@ module Edmodo
 
       attr_reader :api_key
       attr_reader :mode
-    
+
       # Initializes a new instance of the Edmodo API client
       # Options:
       #
@@ -26,6 +26,8 @@ module Edmodo
 
         @format = options[:format]
         @mode = options[:mode]
+        @silence_response_expections = options[:silence_response_expections]
+        @response_ex
         @api_key = (api_key || ENV['EDMODO_API_KEY'] || "").strip
 
         raise_init_errors
@@ -122,7 +124,7 @@ module Edmodo
       def assignments_coming_due user_token
         request :get, resource_uri("assignmentsComingDue", @format), {:user_token => user_token}
       end
-      
+
       # Returns an array of grades set by the app for the given user token.
       # Params:
       #
@@ -217,7 +219,7 @@ module Edmodo
       # => badge_title: limit 50 characters
       # => description: limit 140 characters
       # => image_url: url to badge image, should be 114x114 pixels. Accepted image types: jpg, gif, png
-      def register_badge badge_title, description, image_url 
+      def register_badge badge_title, description, image_url
         request(:post, resource_uri("registerBadge"), {:badge_title => badge_title, :description => description, :image_url => image_url}.delete_if { |k,v| v.nil? })
       end
 
@@ -314,7 +316,9 @@ module Edmodo
       def defaults
         {
           :mode => :sandbox,
-          :format => "json"
+          :format => "json",
+          :silence_response_expections => false
+
         }
       end
 
@@ -326,7 +330,7 @@ module Edmodo
       def generate_user_groups_array users, groups
         users = Array(users)
 
-        user_array = users.map{|token| {:user_token => token}} 
+        user_array = users.map{|token| {:user_token => token}}
 
         groups = Array(groups)
 
